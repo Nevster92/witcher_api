@@ -1,73 +1,39 @@
 package com.witcher.witcher_api.service;
 
 
-import com.witcher.ttrpgapi.repository.UserRepository;
-import com.witcher.ttrpgapi.user.User;
-import com.witcher.ttrpgapi.user.UserDTO;
+import com.witcher.witcher_api.model.pojo.User;
+import com.witcher.witcher_api.repository.UserRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-@NoArgsConstructor
+
 @Service
-public class UserService implements UserDetailsService {
-
-
-
-    // TODO törlés
-
-    private UserRepository userRepo;
+@NoArgsConstructor
+public class UserService {
 
     @Autowired
-    public void UserRepository(UserRepository userRepo) {
-        this.userRepo = userRepo;
-    }
+    UserRepository userRepositoryHibernateImpl;
 
-    public int currentUserId() {
+    private String getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        long id = jwt.getClaim("id");
-        return (int) id;
-    }
-    public User findUserByUsername(String username){
-        return userRepo.findUserByUsername(username);
+        Jwt token = (Jwt) authentication.getPrincipal();
+        return  token.getClaims().get("sub").toString();
     }
 
-    public boolean createNewUser(User userDetails){
-        try {
-            BCryptPasswordEncoder brypt  = new BCryptPasswordEncoder();
-            userDetails.setPassword(brypt.encode(userDetails.getPassword()));
-            userRepo.findUserByUsername(userDetails.getUsername());
-            return false;
-        }catch (EmptyResultDataAccessException e){
-            userRepo.createUser(userDetails);
-            return true;
-        }
-    }
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return findUserByUsername(username);
+    public User getCurrentUser()
+    {
+        return userRepositoryHibernateImpl.getUserById(getUserId());
     }
 
-    public void modifyUser(User user) {
-        user.setId(currentUserId());
-        BCryptPasswordEncoder brypt  = new BCryptPasswordEncoder();
-        user.setPassword(brypt.encode(user.getPassword()));
-        userRepo.updateUser(user);
+    public void setUsername(String newUsername){
+        userRepositoryHibernateImpl.setUsernameById(getUserId(), newUsername);
+    }
+    public void setEmail(String newEmail){
+        userRepositoryHibernateImpl.setEmailById(getUserId(), newEmail);
     }
 
-    public UserDTO getUserData() {
-        return userRepo.getUserData(currentUserId());
-
-    }
 }
