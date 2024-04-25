@@ -15,52 +15,20 @@ public class UserRepositoryJdbcImpl  implements UserRepository{
         return null;
     }
 
+
     @Override
-    public void setUsernameById(String userId, String userName) {
+    public void updateUser(String userId, User user) {
 
     }
 
-    @Override
-    public void setEmailById(String userId, String email) {
-
-    }
-//
 //    private JdbcTemplate jdbc;
 //
 //    @Autowired
 //    public UserRepositoryJdbcImpl(JdbcTemplate jdbc){
 //        this.jdbc = jdbc;
 //    }
-//
-//
-//    @Override
-//    public User getUserById(String userId) {
-//        String sql = "SELECT * FROM user_data WHERE id = ?";
-//            try {
-//                return jdbc.queryForObject(sql, new Object[]{userId}, (rs, i) -> new User(
-//                        rs.getString("id"),
-//                        rs.getString("username"),
-//                        rs.getString("email")
-//                ));
-//            } catch (EmptyResultDataAccessException e) {
-//                throw e;
-//            }
-//
-//    }
-//
-//    @Override
-//    public void setUsernameById(String userId, String userName) {
-//        String sql = "UPDATE user_data SET username = ? WHERE id= ?";
-//        try {
-//            jdbc.update(sql, userId, userName);
-//        }catch (Exception e){
-//
-//        }
-//    }
-//
-//    @Override
-//    public void setEmailById(String UserId, String email) {
-//
-//    }
+
+
+
 
 }

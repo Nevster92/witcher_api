@@ -29,11 +29,10 @@ public class UserService {
         return userRepositoryHibernateImpl.getUserById(getUserId());
     }
 
-    public void setUsername(String newUsername){
-        userRepositoryHibernateImpl.setUsernameById(getUserId(), newUsername);
+
+    public void updateUser(User user){
+        userRepositoryHibernateImpl.updateUser(getUserId(), user);
     }
-    public void setEmail(String newEmail){
-        userRepositoryHibernateImpl.setEmailById(getUserId(), newEmail);
-    }
+
 
 }
