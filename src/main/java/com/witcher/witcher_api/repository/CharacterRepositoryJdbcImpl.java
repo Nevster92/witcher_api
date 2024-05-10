@@ -2,19 +2,37 @@ package com.witcher.witcher_api.repository;
 
 import com.witcher.witcher_api.model.pojo.*;
 import com.witcher.witcher_api.model.pojo.Character;
+import com.witcher.witcher_api.model.request.CharacterRequest;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Component
 @Repository
 public class CharacterRepositoryJdbcImpl implements CharacterRepository{
+
+    private EntityManagerFactory emf;
+    private EntityManager entityManager;
+    // private EntityManager entityManager = Persistence.createEntityManagerFactory("wticher-pg").createEntityManager();
+//    public CharacterRepositoryJdbcImpl() {
+//        this.emf = Persistence.createEntityManagerFactory("wticher-pg");
+//        this.entityManager = emf.createEntityManager();
+//    }
 
     private JdbcTemplate jdbc;
 
     @Autowired
     public CharacterRepositoryJdbcImpl(JdbcTemplate jdbc){
+        this.emf = Persistence.createEntityManagerFactory("wticher-pg");
+        this.entityManager = emf.createEntityManager();
         this.jdbc = jdbc;
     }
     public String test(){
@@ -24,39 +42,22 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
     @Override
     public Character findCharacterById(int id) {
         //TODO refactor to single sql query
-        String characterSql = "SELECT * FROM character WHERE id = ?";
 
-        Character character = (Character) jdbc.queryForObject(
-                characterSql,
-                new Object[]{id},
-                new BeanPropertyRowMapper(Character.class));
+        return  entityManager.find(Character.class,id);
+    }
 
-        try {
-            String bodySql = "SELECT * FROM body_skill WHERE character_id = ?";
-            character.setBodySkill((BodySkill) jdbc.queryForObject(bodySql, new Object[]{id}, new BeanPropertyRowMapper(BodySkill.class)));
-        }catch (EmptyResultDataAccessException e){}
+    @Override
+    public  List<Character> findAllCharacters(CharacterRequest characterRequest, String userId) {
+    String query = """
+           SELECT c 
+           FROM Character c WHERE c.user.id = :userId
+            """;
 
-        try{
-            String dexteritySql = "SELECT * FROM dexterity_skill WHERE character_id = ?";
-            character.setDexteritySkill((DexteritySkill) jdbc.queryForObject(dexteritySql,new Object[]{id},new BeanPropertyRowMapper(DexteritySkill.class)));
-        }catch (EmptyResultDataAccessException e){}
+        List<Character> characters = entityManager.createQuery(query, Character.class)
+                .setParameter("userId", userId)
+                .getResultList();
+        return characters;
 
-        try {
-           String intelligenceSql = "SELECT * FROM intelligence_skill WHERE character_id = ?";
-            character.setIntelligenceSkill((IntelligenceSkill) jdbc.queryForObject(intelligenceSql,new Object[]{id},new BeanPropertyRowMapper(IntelligenceSkill.class)));
-        }catch (EmptyResultDataAccessException e){}
-
-        try {
-            String empathySkillSql = "SELECT * FROM empathy_skill WHERE character_id = ?";
-            character.setEmpathySkill((EmpathySkill) jdbc.queryForObject(empathySkillSql,new Object[]{id},new BeanPropertyRowMapper(EmpathySkill.class)));
-        }catch (EmptyResultDataAccessException e){}
-
-        try {
-            String craftSkillSql = "SELECT * FROM craft_skill WHERE character_id = ?";
-            character.setCraftSkill((CraftSkill) jdbc.queryForObject(craftSkillSql,new Object[]{id},new BeanPropertyRowMapper(CraftSkill.class)));
-        }catch (EmptyResultDataAccessException e){}
-
-        return character;
     }
 
 
@@ -70,5 +71,15 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
         }catch (EmptyResultDataAccessException e) {
             return false;
         }
+    }
+
+    public Character test(int id){
+        String characterSql = "SELECT * FROM character WHERE id = ?";
+
+        Character character = (Character) jdbc.queryForObject(
+                characterSql,
+                new Object[]{id},
+                new BeanPropertyRowMapper(Character.class));
+        return character;
     }
 }

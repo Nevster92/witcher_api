@@ -1,15 +1,26 @@
 package com.witcher.witcher_api.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+@Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "intelligence_skill")
+ @JsonIgnoreProperties({"character"})
 public class IntelligenceSkill {
+
+    @Id
+    @OneToOne
+    @JoinColumn(name = "character_id")
+    private Character character;
 
     private Integer awareness = 0;
     private Integer business = 0;

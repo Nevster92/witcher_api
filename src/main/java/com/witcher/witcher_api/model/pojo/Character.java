@@ -1,5 +1,6 @@
 package com.witcher.witcher_api.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -7,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,7 +17,7 @@ import lombok.Setter;
 public class Character {
 
     @Id
-    private Integer id;
+    private Long id;
 
     @NotBlank
     private String name;
@@ -61,12 +62,25 @@ public class Character {
    private Integer punch = 0;
     private Integer kick = 0;
 
+    @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
     private IntelligenceSkill intelligenceSkill;
-    private BodySkill bodySkill;
-    private DexteritySkill dexteritySkill;
-    private EmpathySkill empathySkill;
-    private CraftSkill craftSkill;
 
+    @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
+    private BodySkill bodySkill;
+
+    @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
+    private DexteritySkill dexteritySkill;
+    @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
+    private EmpathySkill empathySkill;
+    @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
+    private CraftSkill craftSkill;
+    @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
+    private CraftSkill willSkill;
+
+    //@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JsonIgnore
+    private User user;
 
 
 
