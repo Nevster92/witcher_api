@@ -42,4 +42,6 @@ public class CharacterService {
     public List<Character> getCharacters(CharacterRequest characterRequest)  {
         return characterRepositoryJdbcImpl.findAllCharacters(characterRequest, getUserId());
     }
+
+
 }

@@ -37,5 +37,13 @@ public class CharacterController {
             return ERROR;
         }
     }
+
+    @CrossOrigin
+    @PutMapping("character/{id}")
+    ResponseEntity<?> setCharacter(@ModelAttribute CharacterRequest characterRequest){
+
+        System.out.println();
+        return OK;
+    }
 }
 

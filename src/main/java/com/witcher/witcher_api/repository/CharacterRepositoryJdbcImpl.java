@@ -48,16 +48,33 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 
     @Override
     public  List<Character> findAllCharacters(CharacterRequest characterRequest, String userId) {
+        // The order of the condition has to be the same. First ILIKE and after the NULL check. (Hibernate v6 thing)
     String query = """
            SELECT c 
            FROM Character c WHERE c.user.id = :userId
+            AND (LOWER(c.name)  ILIKE CONCAT('%', LOWER(:name ), '%') OR :name IS NULL  )
+             AND (  LOWER(c.gender) ILIKE CONCAT('%', LOWER(:gender), '%') OR :gender IS NULL )
+             AND (  LOWER(c.profession) ILIKE CONCAT('%', LOWER(:profession), '%') OR :profession IS NULL )
             """;
-
+    try {
         List<Character> characters = entityManager.createQuery(query, Character.class)
                 .setParameter("userId", userId)
+                .setParameter("name", characterRequest.getName())
+                .setParameter("gender", characterRequest.getGender())
+                .setParameter("profession", characterRequest.getProfession())
                 .getResultList();
-        return characters;
 
+        return characters;
+    }catch (Exception e){
+        System.out.println(e);
+    }
+
+    return null;
+    }
+
+    @Override
+    public Character editCharacter(int characterId) {
+        return null;
     }
 
 

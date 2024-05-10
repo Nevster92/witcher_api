@@ -9,7 +9,7 @@ public interface CharacterRepository {
 
  Character findCharacterById(int id);
  List<Character> findAllCharacters(CharacterRequest characterRequest, String userId);
-
+ Character editCharacter(int characterId);
 
  boolean hasAccesToCharacter(String userId, int characterId);
 
