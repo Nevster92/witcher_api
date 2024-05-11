@@ -43,10 +43,10 @@ public class CharacterService {
         return characterRepositoryJdbcImpl.findAllCharacters(characterRequest, getUserId());
     }
 
-//    public Character setCharacterBody(int characterId, BodySkill bodySkill){
-//
-//
-//    }
+    public Character setCharacterBody(int characterId, BodySkill bodySkill) throws Exception {
+        permissionService.characterPermission(characterId);
+        return characterRepositoryJdbcImpl.setCharacterBodySkill(characterId, bodySkill);
+    }
 
 
 }

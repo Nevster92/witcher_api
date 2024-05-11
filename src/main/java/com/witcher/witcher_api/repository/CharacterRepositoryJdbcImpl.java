@@ -1,19 +1,33 @@
 package com.witcher.witcher_api.repository;
 
+import com.witcher.witcher_api.SqlPrameter;
+import com.witcher.witcher_api.Utils;
 import com.witcher.witcher_api.model.pojo.*;
 import com.witcher.witcher_api.model.pojo.Character;
 import com.witcher.witcher_api.model.request.CharacterRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.PreparedStatement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 @Component
 @Repository
@@ -27,13 +41,15 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 //        this.entityManager = emf.createEntityManager();
 //    }
 
-    private JdbcTemplate jdbc;
+    private NamedParameterJdbcTemplate jdbcNamed;
+    private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public CharacterRepositoryJdbcImpl(JdbcTemplate jdbc){
+    public CharacterRepositoryJdbcImpl(NamedParameterJdbcTemplate jdbcNamed, JdbcTemplate jdbcTemplate){
         this.emf = Persistence.createEntityManagerFactory("wticher-pg");
         this.entityManager = emf.createEntityManager();
-        this.jdbc = jdbc;
+        this.jdbcTemplate = jdbcTemplate;
+        this.jdbcNamed = jdbcNamed;
     }
     public String test(){
         return "lófasz";
@@ -41,7 +57,9 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 
     @Override
     public Character findCharacterById(int id) {
-        return  entityManager.find(Character.class,id);
+        Character character = entityManager.find(Character.class, id);
+        entityManager.refresh(character);
+        return  character;
     }
 
     @Override
@@ -75,13 +93,31 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
         return null;
     }
 
+    @Override
+    public Character setCharacterBodySkill(int characterId, BodySkill bodySkill) {
+        SqlPrameter utilSql = new Utils().sqlUpdateBuilder(bodySkill, "body_skill", characterId);
+
+    try {
+        jdbcNamed.update(utilSql.getSqlQuery(), utilSql.getParameters());
+    }catch (Exception e){
+        System.out.println(e);
+    }
+
+
+            return findCharacterById(characterId);
+
+
+    }
+
 
     @Override
     public boolean hasAccesToCharacter(String userId, int characterId) {
         String sql = "SELECT 1 FROM user_characters WHERE user_id = ? AND character_id = ?";
 
+
+
         try {
-            jdbc.queryForObject(sql, Integer.class, userId, characterId);
+            jdbcTemplate.queryForObject(sql, Integer.class, userId, characterId);
             return true;
         }catch (EmptyResultDataAccessException e) {
             return false;
@@ -91,7 +127,7 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
     public Character test(int id){
         String characterSql = "SELECT * FROM character WHERE id = ?";
 
-        Character character = (Character) jdbc.queryForObject(
+        Character character = (Character) jdbcTemplate.queryForObject(
                 characterSql,
                 new Object[]{id},
                 new BeanPropertyRowMapper(Character.class));

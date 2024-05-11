@@ -44,8 +44,11 @@ public class CharacterController {
     @CrossOrigin
     @PostMapping("character/{id}")
     ResponseEntity<?> setCharacter(@PathVariable int id, @RequestBody BodySkill bodySkill){
-        System.out.println(bodySkill);
-        return OK;
+        try {
+            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterBody(id, bodySkill));
+        }catch (Exception e){
+            return ERROR;
+        }
     }
 }
 
