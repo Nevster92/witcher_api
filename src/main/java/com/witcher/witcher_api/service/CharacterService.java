@@ -1,5 +1,6 @@
 package com.witcher.witcher_api.service;
 
+import com.witcher.witcher_api.model.pojo.BodySkill;
 import com.witcher.witcher_api.model.pojo.Character;
 import com.witcher.witcher_api.model.request.CharacterRequest;
 import com.witcher.witcher_api.repository.CharacterRepository;
@@ -33,15 +34,19 @@ public class CharacterService {
     }
 
     public Character getCharacterById(int characterId) throws Exception {
-        if(permissionService.hasPermissionToCharacter(characterId)){
+        permissionService.characterPermission(characterId);
             return characterRepositoryJdbcImpl.findCharacterById(characterId);
-        }
-        throw new Exception("No Permission");
+
     }
 
     public List<Character> getCharacters(CharacterRequest characterRequest)  {
         return characterRepositoryJdbcImpl.findAllCharacters(characterRequest, getUserId());
     }
+
+//    public Character setCharacterBody(int characterId, BodySkill bodySkill){
+//
+//
+//    }
 
 
 }

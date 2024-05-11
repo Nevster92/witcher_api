@@ -1,12 +1,11 @@
 package com.witcher.witcher_api.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@ToString
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,11 +15,13 @@ import lombok.Setter;
 @Table(name = "body_skill")
 public class BodySkill {
 
+    @JsonIgnore
     @Id
     @OneToOne
     @JoinColumn(name = "character_id")
     private Character character;
 
-    private Integer physique = 0;
-    private Integer endurance = 0;
+
+    private Integer physique;
+    private Integer endurance;
 }

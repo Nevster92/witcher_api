@@ -1,12 +1,15 @@
 package com.witcher.witcher_api.controller;
 
 
+import com.witcher.witcher_api.model.pojo.BodySkill;
 import com.witcher.witcher_api.model.request.CharacterRequest;
 import com.witcher.witcher_api.service.CharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping()
@@ -25,7 +28,7 @@ public class CharacterController {
         try {
             return ResponseEntity.status(HttpStatus.OK.value()).body( characterService.getCharacterById(id));
         }catch (Exception e){
-            return ERROR;
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     @CrossOrigin
@@ -39,10 +42,9 @@ public class CharacterController {
     }
 
     @CrossOrigin
-    @PutMapping("character/{id}")
-    ResponseEntity<?> setCharacter(@ModelAttribute CharacterRequest characterRequest){
-
-        System.out.println();
+    @PostMapping("character/{id}")
+    ResponseEntity<?> setCharacter(@PathVariable int id, @RequestBody BodySkill bodySkill){
+        System.out.println(bodySkill);
         return OK;
     }
 }

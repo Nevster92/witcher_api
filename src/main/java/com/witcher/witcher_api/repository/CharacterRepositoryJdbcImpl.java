@@ -41,8 +41,6 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 
     @Override
     public Character findCharacterById(int id) {
-        //TODO refactor to single sql query
-
         return  entityManager.find(Character.class,id);
     }
 

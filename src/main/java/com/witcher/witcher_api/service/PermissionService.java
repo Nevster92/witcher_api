@@ -25,8 +25,10 @@ public class PermissionService {
         return  token.getClaims().get("sub").toString();
     }
 
-    public boolean hasPermissionToCharacter(int characterId) {
-        return characterRepositoryJdbcImpl.hasAccesToCharacter(getUserId(), characterId);
+    public void characterPermission(int characterId) throws Exception {
+        if(!characterRepositoryJdbcImpl.hasAccesToCharacter(getUserId(), characterId)){
+            throw new Exception("No Permission!");
+        }
     }
 
 }
