@@ -76,6 +76,8 @@ public class Character {
     private CraftSkill craftSkill;
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
     private CraftSkill willSkill;
+    @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
+    private ReflexSkill reflexSkill;
 
     //@ManyToOne(fetch = FetchType.LAZY)
     @ManyToOne

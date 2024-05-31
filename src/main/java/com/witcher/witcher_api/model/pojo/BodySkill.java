@@ -25,13 +25,6 @@ public class BodySkill {
     private Integer physique;
     private Integer endurance;
 
-    public void update(BodySkill body){
-        if(body.getPhysique() != null){
-            this.physique = body.getPhysique();
-        }
-        if(body.getEndurance() != null){
-            this.endurance = body.getEndurance();
-        }
-    }
+
 
 }

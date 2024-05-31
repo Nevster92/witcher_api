@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 public class Utils {
 
 
-    public SqlPrameter sqlUpdateBuilder(Object object, String tableName, int characterId){
+    public SqlPrameter sqlUpdateBuilder(Object object, String tableName, int characterId, String primaryKey){
         SqlPrameter resoult = new SqlPrameter();
         String returnSql = "UPDATE "+tableName+" SET ";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
@@ -33,8 +33,9 @@ public class Utils {
         }
         // delete the last ","
         returnSql = returnSql.substring(0, returnSql.length() - 1);
+
         //TODO kiszervezni, vagy felszámolni ezt az egészet....
-        returnSql += "WHERE character_id = :characterId";
+        returnSql += "WHERE "+primaryKey+" = :characterId";
         parameters.addValue("characterId", characterId);
 
 

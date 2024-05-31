@@ -1,5 +1,6 @@
 package com.witcher.witcher_api.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,22 +18,23 @@ import lombok.Setter;
  @JsonIgnoreProperties({"character"})
 public class IntelligenceSkill {
 
+    @JsonIgnore
     @Id
     @OneToOne
     @JoinColumn(name = "character_id")
     private Character character;
 
-    private Integer awareness = 0;
-    private Integer business = 0;
-    private Integer deduction = 0;
-    private Integer education = 0;
-    private Integer common_speech = 0;
-    private Integer elder_speech = 0;
-    private Integer dwarven_speech = 0;
-    private Integer monster_lore = 0;
-    private Integer social_etiquette = 0;
-    private Integer streetwise = 0;
-    private Integer tactics = 0;
-    private Integer teaching = 0;
-    private Integer wilderness_survival = 0;
+    private Integer awareness ;
+    private Integer business ;
+    private Integer deduction;
+    private Integer education;
+    private Integer common_speech;
+    private Integer elder_speech;
+    private Integer dwarven_speech;
+    private Integer monster_lore;
+    private Integer social_etiquette;
+    private Integer streetwise;
+    private Integer tactics;
+    private Integer teaching ;
+    private Integer wilderness_survival;
 }
