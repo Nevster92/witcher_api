@@ -1,8 +1,7 @@
 package com.witcher.witcher_api.repository;
 
-import com.witcher.witcher_api.SqlPrameter;
-import com.witcher.witcher_api.Utils;
-import com.witcher.witcher_api.model.pojo.*;
+import com.witcher.witcher_api.utils.SqlPrameter;
+import com.witcher.witcher_api.utils.Utils;
 import com.witcher.witcher_api.model.pojo.Character;
 import com.witcher.witcher_api.model.request.CharacterRequest;
 import jakarta.persistence.EntityManager;
@@ -52,6 +51,7 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
     public Character findCharacterById(int id) {
         Character character = entityManager.find(Character.class, id);
         entityManager.refresh(character);
+        character.initializeStats();
         return  character;
     }
 

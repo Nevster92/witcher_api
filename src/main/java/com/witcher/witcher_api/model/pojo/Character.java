@@ -1,6 +1,7 @@
 package com.witcher.witcher_api.model.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.witcher.witcher_api.utils.TableReader;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -48,15 +49,23 @@ public class Character {
     private Integer will;
     @NotBlank
     private Integer luck;
+    @Transient
     private Integer stun;
+    @Transient
     private Integer run;
+    @Transient
     private Integer leap;
     private Integer hp;
+    @Transient
     private Integer sta;
+    @Transient
     private Integer enc;
+    @Transient
     private Integer rec;
 
+    @Transient
     private Integer max_hp;
+    @Transient
     private Integer melee_bonus;
 
    private Integer punch = 0;
@@ -64,10 +73,8 @@ public class Character {
 
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
     private IntelligenceSkill intelligenceSkill;
-
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
     private BodySkill bodySkill;
-
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
     private DexteritySkill dexteritySkill;
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
@@ -86,22 +93,24 @@ public class Character {
 
 
 
-    public void setCalculatedStats(){
+    public void initializeStats(){
         // TODO set up all the calculated stat from a table
-//        TableReader reader = new TableReader();
-//        int keyCalc = (int) Math.floor ((this.body + this.will) / 2);
-//        this.setHp(reader.physicalTableRead(keyCalc, "hp"));
-//        this.setSta(reader.physicalTableRead(keyCalc, "sta"));
-//        this.setRec(reader.physicalTableRead(keyCalc, "rec"));
-//        this.setStun(reader.physicalTableRead(keyCalc, "stun"));
-//        //MELEE BONUIS
-//        this.setMeleeBonus(reader.meleeBonusRead(this.body));
-//        //RUN (SPD X 3)
-//        this.setRun(this.spd*3);
-//        //LEAP
-//        this.setLeap((int) Math.floor (this.run / 5));
-//        //ENC
-//        this.setEnc(this.body * 10);
+        TableReader reader = new TableReader();
+        int keyCalc = (int) Math.floor ((this.body + this.will) / 2);
+        System.out.println(keyCalc);
+        System.out.println(reader.getPhysicalStatistics(keyCalc, "hp"));
+        this.setMax_hp(reader.getPhysicalStatistics(keyCalc, "hp"));
+        this.setSta(reader.getPhysicalStatistics(keyCalc, "sta"));
+        this.setRec(reader.getPhysicalStatistics(keyCalc, "rec"));
+        this.setStun(reader.getPhysicalStatistics(keyCalc, "stun"));
+        //MELEE BONUIS
+        this.setMelee_bonus(reader.getMeeleBonus(this.body));
+        //RUN (SPD X 3)
+        this.setRun(this.spd*3);
+        //LEAP
+        this.setLeap((int) Math.floor (this.run / 5));
+        //ENC
+        this.setEnc(this.body * 10);
     }
 
 //    public int rollAbillity(String attrKey){

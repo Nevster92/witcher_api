@@ -1,4 +1,4 @@
-package com.witcher.witcher_api;
+package com.witcher.witcher_api.utils;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
