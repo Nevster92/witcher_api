@@ -122,27 +122,6 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
         return generatedId;
     }
 
-    @Override
-    public void insertUserCharacters(String userId, int characterId) {
-        String sql = "INSERT INTO user_characters (character_id, user_id) VALUES (?,?)";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, characterId);
-            ps.setString(2, userId);
-            return ps;
-        });
-
-    }
-
-    @Override
-    public void deleteUserCharacters(int characterId) {
-        String sql = "DELETE FROM user_characters WHERE character_id = ?";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, characterId);
-            return ps;
-        });
-    }
 
     @Override
     public void deleteAttrubute(String attributeTable, int characterId) {
@@ -178,7 +157,7 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 
     @Override
     public boolean hasAccesToCharacter(String userId, int characterId) {
-        String sql = "SELECT 1 FROM user_characters WHERE user_id = ? AND character_id = ?";
+        String sql = "SELECT 1 FROM character WHERE user_id = ? AND id = ?";
         try {
             jdbcTemplate.queryForObject(sql, Integer.class, userId, characterId);
             return true;

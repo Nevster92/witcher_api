@@ -17,9 +17,7 @@ public interface CharacterRepository {
 
  Integer insertCharacter(String characterName, String userId);
  void insertAttribute(String attributeTable, int characterId);
- void insertUserCharacters(String userId, int characterId);
 
- void deleteUserCharacters(int characterId);
  void deleteAttrubute(String attributeTable, int characterId);
  void deleteCharacter(int characterId);
 

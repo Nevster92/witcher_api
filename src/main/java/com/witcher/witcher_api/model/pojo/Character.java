@@ -32,44 +32,44 @@ public class Character {
     private Integer age;
 
     @NotBlank
-    private Integer intelligence=0;
+    private Integer intelligence;
     @NotBlank
-    private Integer ref=0;
+    private Integer ref;
     @NotBlank
-    private Integer dex=0;
+    private Integer dex;
     @NotBlank
-    private Integer body=1;
+    private Integer body;
     @NotBlank
-    private Integer spd=0;
+    private Integer spd;
     @NotBlank
-    private Integer emp=0;
+    private Integer emp;
     @NotBlank
-    private Integer cra=0;
+    private Integer cra;
     @NotBlank
-    private Integer will=1;
+    private Integer will;
     @NotBlank
-    private Integer luck=0;
+    private Integer luck;
     @Transient
-    private Integer stun=0;
+    private Integer stun;
     @Transient
-    private Integer run=0;
+    private Integer run;
     @Transient
-    private Integer leap=0;
-    private Integer hp=0;
+    private Integer leap;
+    private Integer hp;
     @Transient
-    private Integer sta=0;
+    private Integer sta;
     @Transient
-    private Integer enc=0;
+    private Integer enc;
     @Transient
-    private Integer rec=0;
+    private Integer rec;
 
     @Transient
     private Integer max_hp;
     @Transient
     private Integer melee_bonus;
 
-   private Integer punch = 0;
-    private Integer kick = 0;
+   private Integer punch ;
+    private Integer kick ;
 
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
     private IntelligenceSkill intelligenceSkill;
@@ -87,10 +87,12 @@ public class Character {
     private ReflexSkill reflexSkill;
 
     //@ManyToOne(fetch = FetchType.LAZY)
-    @ManyToOne
-    @JsonIgnore
-    private User user;
+//    @ManyToOne
+//    @JsonIgnore
+//    private User user;
 
+    @JsonIgnore
+    private String user_id;
 
 
     public void initializeStats(){

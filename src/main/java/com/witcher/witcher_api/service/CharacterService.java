@@ -88,7 +88,6 @@ public class CharacterService {
     public Character createNewCharacter(String name){
     try {
         int characterId = characterRepositoryJdbcImpl.insertCharacter(name, getUserId());
-        characterRepositoryJdbcImpl.insertUserCharacters(getUserId(), characterId);
 
         // Inicialize all foreign key
         for(String tableName : ATTRIBUTE_TABLENAME_WHITELIST){
@@ -108,7 +107,6 @@ public class CharacterService {
             for(String tableName : ATTRIBUTE_TABLENAME_WHITELIST){
                 characterRepositoryJdbcImpl.deleteAttrubute(tableName, characterId);
             }
-            characterRepositoryJdbcImpl.deleteUserCharacters(characterId);
             characterRepositoryJdbcImpl.deleteCharacter(characterId);
         }catch (Exception e ){
             throw  e;
