@@ -12,12 +12,17 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Set;
 
 
 @Component
@@ -99,6 +104,76 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
         jdbcNamed.update(utilSql.getSqlQuery(), utilSql.getParameters());
         return findCharacterById(characterId);
     }
+
+    @Override
+    public Integer insertCharacter(String characterName, String userId) {
+        String sql = "INSERT INTO character (name, user_id) VALUES (?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+           jdbcTemplate.update(connection -> {
+               PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+               ps.setString(1, characterName);
+               ps.setString(2, userId);
+               return ps;
+           }, keyHolder);
+
+        Map<String, Object> keys = keyHolder.getKeys();
+        int generatedId = ((Number) keys.get("id")).intValue();
+
+        return generatedId;
+    }
+
+    @Override
+    public void insertUserCharacters(String userId, int characterId) {
+        String sql = "INSERT INTO user_characters (character_id, user_id) VALUES (?,?)";
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, characterId);
+            ps.setString(2, userId);
+            return ps;
+        });
+
+    }
+
+    @Override
+    public void deleteUserCharacters(int characterId) {
+        String sql = "DELETE FROM user_characters WHERE character_id = ?";
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, characterId);
+            return ps;
+        });
+    }
+
+    @Override
+    public void deleteAttrubute(String attributeTable, int characterId) {
+        String sql = "DELETE FROM "+attributeTable+" WHERE character_id = ?";
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, characterId);
+            return ps;
+        });
+    }
+
+    @Override
+    public void deleteCharacter(int characterId) {
+        String sql = "DELETE FROM character WHERE id = ?";
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, characterId);
+            return ps;
+        });
+    }
+
+    @Override
+    public void insertAttribute(String attributeTable, int characterId) {
+        String sql = "INSERT INTO "+ attributeTable +" (character_id) VALUES (?)";
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, characterId);
+            return ps;
+        });
+    }
+
 
 
     @Override

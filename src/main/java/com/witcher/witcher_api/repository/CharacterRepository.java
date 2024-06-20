@@ -15,6 +15,14 @@ public interface CharacterRepository {
  Character updateCharacterSkills(int characterId, Object skills, String tableName);
  Character updateCharacterCore(int characterId, Object skills, String tableName);
 
+ Integer insertCharacter(String characterName, String userId);
+ void insertAttribute(String attributeTable, int characterId);
+ void insertUserCharacters(String userId, int characterId);
+
+ void deleteUserCharacters(int characterId);
+ void deleteAttrubute(String attributeTable, int characterId);
+ void deleteCharacter(int characterId);
+
  boolean hasAccesToCharacter(String userId, int characterId);
 
 

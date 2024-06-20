@@ -24,12 +24,34 @@ public class CharacterController {
     CharacterService characterService;
 
     @CrossOrigin
+    @DeleteMapping("character/delete/{id}")
+    ResponseEntity<?> deleteCharacter( @PathVariable int id){
+        try {
+            characterService.deleteCharacter(id);
+            return OK;
+        }catch (Exception e){
+            return ERROR;
+        }
+    }
+
+    @CrossOrigin
+    @PutMapping("character/create")
+    ResponseEntity<?> createNewCharacter( @RequestBody String characterName){
+        try {
+            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.createNewCharacter(characterName));
+        }catch (Exception e){
+            return ERROR;
+        }
+    }
+
+    @CrossOrigin
     @GetMapping("/character/{id}")
     ResponseEntity<?> getCharacterById(@PathVariable int id){
         try {
             return ResponseEntity.status(HttpStatus.OK.value()).body( characterService.getCharacterById(id));
         }catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+
+            return ERROR;
         }
     }
     @CrossOrigin

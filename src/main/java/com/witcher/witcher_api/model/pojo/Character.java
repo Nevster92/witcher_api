@@ -32,36 +32,36 @@ public class Character {
     private Integer age;
 
     @NotBlank
-    private Integer intelligence;
+    private Integer intelligence=0;
     @NotBlank
-    private Integer ref;
+    private Integer ref=0;
     @NotBlank
-    private Integer dex;
+    private Integer dex=0;
     @NotBlank
-    private Integer body;
+    private Integer body=1;
     @NotBlank
-    private Integer spd;
+    private Integer spd=0;
     @NotBlank
-    private Integer emp;
+    private Integer emp=0;
     @NotBlank
-    private Integer cra;
+    private Integer cra=0;
     @NotBlank
-    private Integer will;
+    private Integer will=1;
     @NotBlank
-    private Integer luck;
+    private Integer luck=0;
     @Transient
-    private Integer stun;
+    private Integer stun=0;
     @Transient
-    private Integer run;
+    private Integer run=0;
     @Transient
-    private Integer leap;
-    private Integer hp;
+    private Integer leap=0;
+    private Integer hp=0;
     @Transient
-    private Integer sta;
+    private Integer sta=0;
     @Transient
-    private Integer enc;
+    private Integer enc=0;
     @Transient
-    private Integer rec;
+    private Integer rec=0;
 
     @Transient
     private Integer max_hp;
@@ -97,8 +97,6 @@ public class Character {
         // TODO set up all the calculated stat from a table
         TableReader reader = new TableReader();
         int keyCalc = (int) Math.floor ((this.body + this.will) / 2);
-        System.out.println(keyCalc);
-        System.out.println(reader.getPhysicalStatistics(keyCalc, "hp"));
         this.setMax_hp(reader.getPhysicalStatistics(keyCalc, "hp"));
         this.setSta(reader.getPhysicalStatistics(keyCalc, "sta"));
         this.setRec(reader.getPhysicalStatistics(keyCalc, "rec"));

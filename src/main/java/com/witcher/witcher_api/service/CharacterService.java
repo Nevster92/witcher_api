@@ -14,11 +14,13 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @NoArgsConstructor
 
 public class CharacterService {
+    private static final Set<String> ATTRIBUTE_TABLENAME_WHITELIST = Set.of("body_skill", "craft_skill", "dexterity_skill", "empathy_skill", "intelligence_skill", "reflex_skill", "will_skill");
 
 
     @Autowired
@@ -83,4 +85,35 @@ public class CharacterService {
     }
 
 
+    public Character createNewCharacter(String name){
+    try {
+        int characterId = characterRepositoryJdbcImpl.insertCharacter(name, getUserId());
+        characterRepositoryJdbcImpl.insertUserCharacters(getUserId(), characterId);
+
+        // Inicialize all foreign key
+        for(String tableName : ATTRIBUTE_TABLENAME_WHITELIST){
+            characterRepositoryJdbcImpl.insertAttribute(tableName, characterId);
+        }
+        return characterRepositoryJdbcImpl.findCharacterById(characterId);
+    }catch (Exception e ){
+        return null;
+    }
+
+    }
+
+    public void deleteCharacter(int characterId) throws Exception {
+        // delete first all the dependencies
+        permissionService.characterPermission(characterId);
+        try {
+            for(String tableName : ATTRIBUTE_TABLENAME_WHITELIST){
+                characterRepositoryJdbcImpl.deleteAttrubute(tableName, characterId);
+            }
+            characterRepositoryJdbcImpl.deleteUserCharacters(characterId);
+            characterRepositoryJdbcImpl.deleteCharacter(characterId);
+        }catch (Exception e ){
+            throw  e;
+        }
+
+
+    }
 }
