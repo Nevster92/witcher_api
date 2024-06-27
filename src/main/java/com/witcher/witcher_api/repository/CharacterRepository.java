@@ -23,6 +23,12 @@ public interface CharacterRepository {
 
  boolean hasAccesToCharacter(String userId, int characterId);
 
+ public void setWeaponToNull(Integer weaponId, int characterId);
+ public void setArmorToNull(Integer armorId, int characterId);
+
+ public void updateRigthArm(int weaponId, int characterId);
+ public void updateLeftArm(int weaponIdId, int characterId);
+//... armors
 
  String test();
 }

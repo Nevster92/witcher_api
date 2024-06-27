@@ -143,6 +143,17 @@ public class CharacterController {
         }
     }
 
+    @CrossOrigin
+    @PatchMapping("character/{characterId}/r_arm")
+    ResponseEntity<?> updateRightArm(@PathVariable int characterId, @RequestBody Map<String, Object> body){
+        int weaponId = (Integer) body.get("weapon_id");
+        try {
+            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setRigthArm(characterId, weaponId));
+        }catch (Exception e){
+            return ERROR;
+        }
+    }
+
 
 }
-
+ 

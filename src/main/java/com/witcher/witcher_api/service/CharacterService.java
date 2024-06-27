@@ -4,6 +4,7 @@ import com.witcher.witcher_api.model.pojo.*;
 import com.witcher.witcher_api.model.pojo.Character;
 import com.witcher.witcher_api.model.request.CharacterRequest;
 import com.witcher.witcher_api.repository.CharacterRepository;
+import com.witcher.witcher_api.repository.ItemRepository;
 import com.witcher.witcher_api.repository.UserRepository;
 import jakarta.persistence.Cache;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,8 @@ public class CharacterService {
 
     @Autowired
     CharacterRepository characterRepositoryJdbcImpl;
+    @Autowired
+    ItemRepository itemRepositoryJdbcImpl;
 
     @Autowired
     PermissionService permissionService;
@@ -111,7 +114,15 @@ public class CharacterService {
         }catch (Exception e ){
             throw  e;
         }
+    }
 
-
+    public Character setRigthArm(int characterId, int weaponId) throws Exception {
+        permissionService.characterPermission(characterId);
+        permissionService.weaponPermission(weaponId);
+        // are the item owned by the character?
+        if(itemRepositoryJdbcImpl.selectWeapon(weaponId).getCharacter_id() == characterId){
+            characterRepositoryJdbcImpl.updateRigthArm(weaponId, characterId);
+        }
+        return characterRepositoryJdbcImpl.findCharacterById(characterId);
     }
 }

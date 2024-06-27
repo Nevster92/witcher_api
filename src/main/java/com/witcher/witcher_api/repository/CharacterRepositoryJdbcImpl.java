@@ -155,6 +155,7 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 
 
 
+
     @Override
     public boolean hasAccesToCharacter(String userId, int characterId) {
         String sql = "SELECT 1 FROM character WHERE user_id = ? AND id = ?";
@@ -164,6 +165,56 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
         }catch (EmptyResultDataAccessException e) {
             return false;
         }
+    }
+
+    @Override
+    public void setWeaponToNull(Integer weaponId, int characterId) {
+        String sql = """
+                        UPDATE character
+                            SET
+                                l_arm = CASE WHEN l_arm = ? THEN NULL ELSE l_arm END,
+                                r_arm = CASE WHEN r_arm = ? THEN NULL ELSE r_arm END
+                            WHERE
+                                id = ?
+                    """;
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setInt(1, weaponId);
+                ps.setInt(2, weaponId);
+                ps.setInt(3, characterId);
+                return ps;
+            });
+    }
+
+    @Override
+    public void setArmorToNull(Integer armorId, int characterId) {
+
+    }
+
+    @Override
+    public void updateRigthArm(int weaponId, int characterId) {
+        String sql = """
+                        UPDATE character SET r_arm = ? WHERE id = ?
+                    """;
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, weaponId);
+            ps.setInt(2, characterId);
+            return ps;
+        });
+    }
+
+    @Override
+    public void updateLeftArm(int weaponId, int characterId) {
+        String sql = """
+                        UPDATE character SET l_arm = ? WHERE id = ?
+                    """;
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, weaponId);
+            ps.setInt(2, characterId);
+            return ps;
+        });
     }
 
     public Character test(int id){

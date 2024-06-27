@@ -86,14 +86,31 @@ public class Character {
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
     private ReflexSkill reflexSkill;
 
-    //@ManyToOne(fetch = FetchType.LAZY)
-//    @ManyToOne
-//    @JsonIgnore
-//    private User user;
 
     @JsonIgnore
-    private String user_id;
+    @ManyToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
+    @OneToOne
+    @JoinColumn(name="l_arm")
+    private Weapon l_arm;
+
+    @OneToOne
+    @JoinColumn(name="r_arm")
+    private Weapon r_arm;
+
+    @OneToOne
+    @JoinColumn(name="head")
+    private Armor head;
+
+    @OneToOne
+    @JoinColumn(name="torso")
+    private Armor torso;
+
+    @OneToOne
+    @JoinColumn(name="leg")
+    private Armor leg;
 
     public void initializeStats(){
         // TODO set up all the calculated stat from a table
