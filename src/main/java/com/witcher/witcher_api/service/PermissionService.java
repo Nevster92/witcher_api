@@ -47,4 +47,15 @@ public class PermissionService {
 
     }
 
+    public void armorPermission(int armorId) throws Exception {
+        try {
+            String armorOwner = itemRepositoryJdbcImpl.getUserIdByArmorId(armorId);
+            if(!armorOwner.equals(getUserId())){
+                throw new Exception("No Permission!");
+            }
+        }catch (Exception e){
+            throw new Exception("No Permission!");
+        }
+
+    }
 }

@@ -1,6 +1,7 @@
 package com.witcher.witcher_api.controller;
 
 
+import com.witcher.witcher_api.model.pojo.Armor;
 import com.witcher.witcher_api.model.pojo.BodySkill;
 import com.witcher.witcher_api.model.pojo.Character;
 import com.witcher.witcher_api.model.pojo.Weapon;
@@ -24,7 +25,7 @@ public class ItemController {
 
     @CrossOrigin
     @GetMapping("weapon/{id}")
-    ResponseEntity<?> selectWepaons(@PathVariable int id){
+    ResponseEntity<?> getWeapon(@PathVariable int id){
         try {
             return ResponseEntity.status(HttpStatus.OK.value()).body(itemService.getWeapon(id));
         }catch (Exception e){
@@ -34,7 +35,7 @@ public class ItemController {
 
     @CrossOrigin
     @GetMapping("character/{id}/weapons")
-    ResponseEntity<?> selectAllWepaons(@PathVariable int id){
+    ResponseEntity<?> getAllWepaons(@PathVariable int id){
         try {
             return ResponseEntity.status(HttpStatus.OK.value()).body(itemService.getAllWeaponsByCharacter(id));
         }catch (Exception e){
@@ -54,12 +55,11 @@ public class ItemController {
 
     @CrossOrigin
     @DeleteMapping("weapon/{id}")
-    ResponseEntity<?> createNewWeapon(@PathVariable int id){
+    ResponseEntity<?> deleteWeapon(@PathVariable int id){
         try {
             itemService.deleteWeapon(id);
             return OK;
         }catch (Exception e){
-            System.out.println(e.getMessage());
             return ERROR;
         }
     }
@@ -70,6 +70,64 @@ public class ItemController {
         try {
             weapon.setId(id);
             return ResponseEntity.status(HttpStatus.OK.value()).body(itemService.setWeaponAttributes(weapon));
+        }catch (Exception e){
+            return ERROR;
+        }
+    }
+
+
+    //##############################################################
+    //############################ ARMOR ###########################
+    //##############################################################
+
+
+    @CrossOrigin
+    @GetMapping("armor/{id}")
+    ResponseEntity<?> getArmor(@PathVariable int id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK.value()).body(itemService.getArmor(id));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @CrossOrigin
+    @GetMapping("character/{characterId}/armors")
+    ResponseEntity<?> getAllArmors(@PathVariable int characterId){
+        try {
+            return ResponseEntity.status(HttpStatus.OK.value()).body(itemService.getAllArmorsByCharacter(characterId));
+        }catch (Exception e){
+            return ERROR;
+        }
+    }
+
+    @CrossOrigin
+    @PutMapping("character/{characterId}/armor")
+    ResponseEntity<?> createNewArmor(@PathVariable int characterId, @RequestBody Armor armor){
+        try {
+            return ResponseEntity.status(HttpStatus.OK.value()).body(itemService.createNewArmor(armor, characterId));
+        }catch (Exception e){
+            return ERROR;
+        }
+    }
+
+    @CrossOrigin
+    @DeleteMapping("armor/{armorId}")
+    ResponseEntity<?> deleteArmor(@PathVariable int armorId){
+        try {
+            itemService.deleteArmor(armorId);
+            return OK;
+        }catch (Exception e){
+            return ERROR;
+        }
+    }
+
+    @CrossOrigin
+    @PostMapping("armor/{armorId}")
+    ResponseEntity<?> updateArmorAttributes(@PathVariable int id, @RequestBody Armor armor){
+        try {
+            armor.setId(id);
+            return ResponseEntity.status(HttpStatus.OK.value()).body(itemService.setArmorAttributes(armor));
         }catch (Exception e){
             return ERROR;
         }

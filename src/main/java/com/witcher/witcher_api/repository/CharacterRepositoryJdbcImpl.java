@@ -188,7 +188,23 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 
     @Override
     public void setArmorToNull(Integer armorId, int characterId) {
-
+        String sql = """
+                        UPDATE character
+                            SET
+                                head = CASE WHEN head = ? THEN NULL ELSE head END,
+                                torso = CASE WHEN torso = ? THEN NULL ELSE torso END,
+                                leg = CASE WHEN leg = ? THEN NULL ELSE leg END
+                            WHERE
+                                id = ?
+                    """;
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setInt(1, armorId);
+            ps.setInt(2, armorId);
+            ps.setInt(3, armorId);
+            ps.setInt(4, characterId);
+            return ps;
+        });
     }
 
     @Override

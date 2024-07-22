@@ -105,6 +105,7 @@ public class ItemRepositoryJdbcImpl implements ItemRepository{
         return keyHolder.getKey().intValue();
     }
 
+
     @Override
     public int createNewArmor(Armor armor, int characterId) {
         String sql = "INSERT INTO armor (name, category, stopping_power, armor_enhancement, availability, effect, encumbrance_value, weight, price, character_id) " +
