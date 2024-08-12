@@ -49,41 +49,39 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
         this.jdbcNamed = jdbcNamed;
     }
     public String test(){
-        return "tesztiiii";
+      //  String characterSql = "SELECT name FROM character WHERE name = 'karai'";
+        String characterSql = "SELECT username FROM user_data WHERE username = 'test'";
+
+        String name = jdbcTemplate.queryForObject(characterSql, String.class);
+        return name;
+//        Character character = jdbcTemplate.queryForObject(
+//                characterSql,
+//                new BeanPropertyRowMapper<>(Character.class));
+//        return character.getName();
     }
 
     @Override
     public Character findCharacterById(int id) {
-        Character character = entityManager.find(Character.class, id);
-        entityManager.refresh(character);
-        character.initializeStats();
+        String sql = "SELECT * FROM character WHERE id = ?";
+        Character character  = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Character.class), id);
+
+//        Character character = entityManager.find(Character.class, id);
+//        entityManager.refresh(character);
+//        character.initializeStats();
         return  character;
     }
 
     @Override
-    public  List<Character> findAllCharacters(CharacterRequest characterRequest, String userId) {
-        // The order of the condition has to be the same. First ILIKE and after the NULL check. (Hibernate v6 thing)
-    String query = """
-           SELECT c 
-           FROM Character c WHERE c.user.id = :userId
-            AND (LOWER(c.name)  ILIKE CONCAT('%', LOWER(:name ), '%') OR :name IS NULL  )
-             AND (  LOWER(c.gender) ILIKE CONCAT('%', LOWER(:gender), '%') OR :gender IS NULL )
-             AND (  LOWER(c.profession) ILIKE CONCAT('%', LOWER(:profession), '%') OR :profession IS NULL )
-            """;
-    try {
-        List<Character> characters = entityManager.createQuery(query, Character.class)
-                .setParameter("userId", userId)
-                .setParameter("name", characterRequest.getName())
-                .setParameter("gender", characterRequest.getGender())
-                .setParameter("profession", characterRequest.getProfession())
-                .getResultList();
+    public  List<Character> findAllCharacters( String userId) {
+        String query = "SELECT * FROM character WHERE user_id = ?";
+        try {
+            return jdbcTemplate.query(query, new Object[]{userId},
+                    new BeanPropertyRowMapper<>(Character.class));
+        } catch (Exception e) {
+            System.out.println(e);
+            return null;
+        }
 
-        return characters;
-    }catch (Exception e){
-        System.out.println(e);
-    }
-
-    return null;
     }
 
     @Override
@@ -234,11 +232,10 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
     }
 
     public Character test(int id){
-        String characterSql = "SELECT * FROM character WHERE id = ?";
+        String characterSql = "SELECT * FROM character";
 
         Character character = (Character) jdbcTemplate.queryForObject(
                 characterSql,
-                new Object[]{id},
                 new BeanPropertyRowMapper(Character.class));
         return character;
     }

@@ -44,8 +44,8 @@ public class CharacterService {
 
     }
 
-    public List<Character> getCharacters(CharacterRequest characterRequest)  {
-        return characterRepositoryJdbcImpl.findAllCharacters(characterRequest, getUserId());
+    public List<Character> getCharacters()  {
+        return characterRepositoryJdbcImpl.findAllCharacters(getUserId());
     }
 
     public Character setCharacterBody(int characterId, BodySkill bodySkill) throws Exception {

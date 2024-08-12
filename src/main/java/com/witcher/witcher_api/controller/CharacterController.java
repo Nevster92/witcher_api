@@ -56,9 +56,9 @@ public class CharacterController {
     }
     @CrossOrigin
     @GetMapping("characters")
-    ResponseEntity<?> getCharacters(@ModelAttribute CharacterRequest characterRequest){
+    ResponseEntity<?> getCharacters(){
         try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body( characterService.getCharacters(characterRequest));
+            return ResponseEntity.status(HttpStatus.OK.value()).body( characterService.getCharacters());
         }catch (Exception e){
             return ERROR;
         }
