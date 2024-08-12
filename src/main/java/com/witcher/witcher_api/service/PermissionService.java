@@ -30,7 +30,7 @@ public class PermissionService {
     }
 
     public void characterPermission(int characterId) throws Exception {
-        if(!characterRepositoryJdbcImpl.hasAccesToCharacter(getUserId(), characterId)){
+        if(!characterRepositoryJdbcImpl.hasAccessToCharacter(getUserId(), characterId)){
             throw new Exception("No Permission!");
         }
     }

@@ -49,26 +49,23 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
         this.jdbcNamed = jdbcNamed;
     }
     public String test(){
-      //  String characterSql = "SELECT name FROM character WHERE name = 'karai'";
         String characterSql = "SELECT username FROM user_data WHERE username = 'test'";
-
         String name = jdbcTemplate.queryForObject(characterSql, String.class);
         return name;
-//        Character character = jdbcTemplate.queryForObject(
-//                characterSql,
-//                new BeanPropertyRowMapper<>(Character.class));
-//        return character.getName();
     }
 
     @Override
     public Character findCharacterById(int id) {
         String sql = "SELECT * FROM character WHERE id = ?";
+        try {
         Character character  = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Character.class), id);
-
+            return  character;
+        }catch (Exception e){
+            throw new EmptyResultDataAccessException(1);
+        }
 //        Character character = entityManager.find(Character.class, id);
 //        entityManager.refresh(character);
 //        character.initializeStats();
-        return  character;
     }
 
     @Override
@@ -78,15 +75,9 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
             return jdbcTemplate.query(query, new Object[]{userId},
                     new BeanPropertyRowMapper<>(Character.class));
         } catch (Exception e) {
-            System.out.println(e);
             return null;
         }
 
-    }
-
-    @Override
-    public Character editCharacter(int characterId) {
-        return null;
     }
 
     @Override
@@ -122,7 +113,7 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 
 
     @Override
-    public void deleteAttrubute(String attributeTable, int characterId) {
+    public void deleteAttributete(String attributeTable, int characterId) {
         String sql = "DELETE FROM "+attributeTable+" WHERE character_id = ?";
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -155,7 +146,7 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 
 
     @Override
-    public boolean hasAccesToCharacter(String userId, int characterId) {
+    public boolean hasAccessToCharacter(String userId, int characterId) {
         String sql = "SELECT 1 FROM character WHERE user_id = ? AND id = ?";
         try {
             jdbcTemplate.queryForObject(sql, Integer.class, userId, characterId);
