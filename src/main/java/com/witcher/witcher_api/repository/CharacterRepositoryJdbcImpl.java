@@ -7,6 +7,7 @@ import com.witcher.witcher_api.model.request.CharacterRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -16,6 +17,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.sql.PreparedStatement;
@@ -29,25 +31,33 @@ import java.util.Set;
 @Repository
 public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 
-    private EntityManagerFactory emf;
-    private EntityManager entityManager;
-    // private EntityManager entityManager = Persistence.createEntityManagerFactory("wticher-pg").createEntityManager();
-//    public CharacterRepositoryJdbcImpl() {
-//        this.emf = Persistence.createEntityManagerFactory("wticher-pg");
-//        this.entityManager = emf.createEntityManager();
-//    }
+    private final EntityManager entityManager;
+
 
     private NamedParameterJdbcTemplate jdbcNamed;
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public CharacterRepositoryJdbcImpl(NamedParameterJdbcTemplate jdbcNamed, JdbcTemplate jdbcTemplate){
-        this.emf = Persistence.createEntityManagerFactory("wticher-pg");
-        // TODO Adott metódusokba kihelyezni mert nem thread safe
-        this.entityManager = emf.createEntityManager();
+    public CharacterRepositoryJdbcImpl(NamedParameterJdbcTemplate jdbcNamed, JdbcTemplate jdbcTemplate, EntityManager entityManager) throws ClassNotFoundException {
+        this.entityManager = entityManager;
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcNamed = jdbcNamed;
     }
+
+
+//   private EntityManagerFactory emf;
+//   private EntityManager entityManager;
+//    private NamedParameterJdbcTemplate jdbcNamed;
+//    private JdbcTemplate jdbcTemplate;
+//
+//    @Autowired
+//    public CharacterRepositoryJdbcImpl(NamedParameterJdbcTemplate jdbcNamed, JdbcTemplate jdbcTemplate) throws ClassNotFoundException {
+//        this.emf = Persistence.createEntityManagerFactory("wticher-pg");
+//        this.entityManager = emf.createEntityManager();
+//        this.jdbcTemplate = jdbcTemplate;
+//        this.jdbcNamed = jdbcNamed;
+//    }
+
     public String test(){
         String characterSql = "SELECT username FROM user_data WHERE username = 'test'";
         String name = jdbcTemplate.queryForObject(characterSql, String.class);
@@ -55,17 +65,27 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
     }
 
     @Override
+    @Transactional
     public Character findCharacterById(int id) {
-        String sql = "SELECT * FROM character WHERE id = ?";
-        try {
-        Character character  = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Character.class), id);
-            return  character;
-        }catch (Exception e){
-            throw new EmptyResultDataAccessException(1);
+//        String sql = "SELECT * FROM character WHERE id = ?";
+//        try {
+//        Character character  = jdbcTemplate.queryForObject(sql, new BeanPropertyRowMapper<>(Character.class), id);
+//            return  character;
+//        }catch (Exception e){
+//            throw new EmptyResultDataAccessException(1);
+//        }
+
+        try{
+                Character character = entityManager.find(Character.class, id);
+                System.out.println(character);
+                entityManager.refresh(character);
+                character.initializeStats();
+            return character;
+                }catch (Exception e){
+            System.out.println(e.getMessage());
         }
-//        Character character = entityManager.find(Character.class, id);
-//        entityManager.refresh(character);
-//        character.initializeStats();
+
+return null;
     }
 
     @Override

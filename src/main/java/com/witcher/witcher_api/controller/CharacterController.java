@@ -139,6 +139,7 @@ public class CharacterController {
         try {
             return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterCore(id, character));
         }catch (Exception e){
+            System.out.println(e.getMessage());
             return ERROR;
         }
     }

@@ -19,7 +19,6 @@ import java.util.Set;
 
 @Service
 @NoArgsConstructor
-
 public class CharacterService {
     private static final Set<String> ATTRIBUTE_TABLENAME_WHITELIST = Set.of("body_skill", "craft_skill", "dexterity_skill", "empathy_skill", "intelligence_skill", "reflex_skill", "will_skill");
 
@@ -108,7 +107,7 @@ public class CharacterService {
         permissionService.characterPermission(characterId);
         try {
             for(String tableName : ATTRIBUTE_TABLENAME_WHITELIST){
-                characterRepositoryJdbcImpl.deleteAttrubute(tableName, characterId);
+                characterRepositoryJdbcImpl.deleteAttributete(tableName, characterId);
             }
             characterRepositoryJdbcImpl.deleteCharacter(characterId);
         }catch (Exception e ){
