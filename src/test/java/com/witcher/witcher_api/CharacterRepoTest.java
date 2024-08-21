@@ -67,7 +67,23 @@ public class CharacterRepoTest {
         character_02.setAge(33);
 
         this.testCharacterId01 = characterRepositoryJdbcImpl.insertCharacter(character_01.getName(), user_01.getId());
+        characterRepositoryJdbcImpl.insertAttribute("body_skill", this.testCharacterId01);
+        characterRepositoryJdbcImpl.insertAttribute("craft_skill", this.testCharacterId01);
+        characterRepositoryJdbcImpl.insertAttribute("dexterity_skill", this.testCharacterId01);
+        characterRepositoryJdbcImpl.insertAttribute("empathy_skill", this.testCharacterId01);
+        characterRepositoryJdbcImpl.insertAttribute("intelligence_skill", this.testCharacterId01);
+        characterRepositoryJdbcImpl.insertAttribute("reflex_skill", this.testCharacterId01);
+        characterRepositoryJdbcImpl.insertAttribute("will_skill", this.testCharacterId01);
+
+
         this.testCharacterId02 = characterRepositoryJdbcImpl.insertCharacter(character_02.getName(), user_02.getId());
+        characterRepositoryJdbcImpl.insertAttribute("body_skill", this.testCharacterId02);
+        characterRepositoryJdbcImpl.insertAttribute("craft_skill", this.testCharacterId02);
+        characterRepositoryJdbcImpl.insertAttribute("dexterity_skill", this.testCharacterId02);
+        characterRepositoryJdbcImpl.insertAttribute("empathy_skill", this.testCharacterId02);
+        characterRepositoryJdbcImpl.insertAttribute("intelligence_skill", this.testCharacterId02);
+        characterRepositoryJdbcImpl.insertAttribute("reflex_skill", this.testCharacterId02);
+        characterRepositoryJdbcImpl.insertAttribute("will_skill", this.testCharacterId02);
     }
 
 
