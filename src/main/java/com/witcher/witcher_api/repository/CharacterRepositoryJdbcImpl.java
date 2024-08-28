@@ -59,9 +59,10 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 //    }
 
     public String test(){
-        String characterSql = "SELECT username FROM user_data WHERE username = 'test'";
-        String name = jdbcTemplate.queryForObject(characterSql, String.class);
-        return name;
+//        String characterSql = "SELECT username FROM user_data WHERE username = 'test'";
+//        String name = jdbcTemplate.queryForObject(characterSql, String.class);
+//        return name;
+ return "JDBC";
     }
 
     @Override
@@ -77,27 +78,20 @@ public class CharacterRepositoryJdbcImpl implements CharacterRepository{
 
         try{
                 Character character = entityManager.find(Character.class, id);
-                System.out.println(character);
                 entityManager.refresh(character);
                 character.initializeStats();
             return character;
                 }catch (Exception e){
-            System.out.println(e.getMessage());
+                    throw e;
         }
 
-return null;
     }
 
     @Override
     public  List<Character> findAllCharacters( String userId) {
         String query = "SELECT * FROM character WHERE user_id = ?";
-        try {
             return jdbcTemplate.query(query, new Object[]{userId},
                     new BeanPropertyRowMapper<>(Character.class));
-        } catch (Exception e) {
-            return null;
-        }
-
     }
 
     @Override

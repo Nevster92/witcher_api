@@ -4,20 +4,18 @@ import com.witcher.witcher_api.model.pojo.ReflexSkill;
 import com.witcher.witcher_api.model.pojo.User;
 import com.witcher.witcher_api.repository.CharacterRepository;
 import com.witcher.witcher_api.repository.UserRepositoryJdbcImpl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
@@ -30,6 +28,7 @@ public class CharacterRepoTest {
 
     @Autowired
     private CharacterRepository characterRepositoryJdbcImpl;
+
 
     @Autowired
     private UserRepositoryJdbcImpl userRepositoryJdbcImpl;
@@ -90,9 +89,13 @@ public class CharacterRepoTest {
 
     @Test
     @Transactional
-    public void testGetCharacter(){
+    public void testFindCharacter(){
         Character testCharacter = characterRepositoryJdbcImpl.findCharacterById(testCharacterId01);
-        assertEquals( "Get character by id","character_01", testCharacter.getName());
+        assertEquals( "Find character by id","character_01", testCharacter.getName());
+        Assertions.assertThrows(Exception.class, () -> {
+            characterRepositoryJdbcImpl.findCharacterById(0);
+        });
+
     }
 
     @Test
@@ -118,23 +121,35 @@ public class CharacterRepoTest {
         assertTrue("The list should contain a character named testCharacter.", characters.stream().anyMatch(c -> c.getName().equals("testCharacter")));
         assertTrue("The list should contain a character named character_01.", characters.stream().anyMatch(c -> c.getName().equals("character_01")));
 
+        assertEquals("The list size must be 0 with not existing userId.",0, characterRepositoryJdbcImpl.findAllCharacters("notExistedUserId").size());
     }
 
     @Test
     @Transactional
-    public void testupdateCharacterSkills() {
+    public void testUpdateCharacterSkills() {
         ReflexSkill reflexSkill = new ReflexSkill();
         reflexSkill.setBrawling(3);
         reflexSkill.setDodge(5);
         reflexSkill.setMeele(8);
-        reflexSkill.setSmall_blades(0);
+        reflexSkill.setSmall_blades(12);
 
         characterRepositoryJdbcImpl.updateCharacterSkills(testCharacterId01, reflexSkill, "reflex_skill");
         Character testCharacter = characterRepositoryJdbcImpl.findCharacterById(testCharacterId01);
 
         assertEquals("Brawling skill Update not correct",3, testCharacter.getReflexSkill().getBrawling());
-
+        assertEquals("Dodge skill Update not correct",5, testCharacter.getReflexSkill().getDodge());
+        assertEquals("Meele skill Update not correct",8, testCharacter.getReflexSkill().getMeele());
+        assertEquals("Small blades skill Update not correct",12, testCharacter.getReflexSkill().getSmall_blades());
     }
+
+    @Test
+    @Transactional
+    public void insertCharacter(){
+       Integer newCharacterId =  characterRepositoryJdbcImpl.insertCharacter("insertTestName", this.user_01.getId());
+        assertEquals("Cannot find the new Character by Id.", "insertTestName", characterRepositoryJdbcImpl.findCharacterById(newCharacterId).getName());
+        }
+
+
 
 
 
