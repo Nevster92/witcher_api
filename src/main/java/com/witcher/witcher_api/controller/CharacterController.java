@@ -4,10 +4,12 @@ package com.witcher.witcher_api.controller;
 import com.witcher.witcher_api.model.pojo.*;
 import com.witcher.witcher_api.model.pojo.Character;
 import com.witcher.witcher_api.model.request.CharacterRequest;
+import com.witcher.witcher_api.repository.CharacterRepo;
 import com.witcher.witcher_api.service.CharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -153,6 +155,32 @@ public class CharacterController {
         }catch (Exception e){
             return ERROR;
         }
+    }
+
+
+
+    @Autowired
+    private CharacterRepo characterRepo;
+
+
+    @CrossOrigin
+    @GetMapping("testcharacter")
+    @Transactional
+    ResponseEntity<?> test(){
+
+        Character character = characterRepo.findByIdCustom(37L);
+        System.out.println("Mentés elött: " + character.getName());
+        System.out.println(character);
+
+        character.setName("MÁS NÉV");
+        System.out.println("Modosítás után: " + character.getName());
+
+        System.out.println(character);
+      //  characterRepo.save(character);
+
+        System.out.println("Mentés után: "+ characterRepo.findByIdCustom(37L).getName());
+            return OK;
+
     }
 
 

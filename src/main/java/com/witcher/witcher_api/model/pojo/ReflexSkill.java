@@ -32,5 +32,18 @@ public class ReflexSkill {
     private Integer staff;
     private Integer swordsmanship;
 
+    @Override
+    public String toString() {
+        return "ReflexSkill{" +
 
+                ", brawling=" + brawling +
+                ", dodge=" + dodge +
+                ", meele=" + meele +
+                ", riding=" + riding +
+                ", sailing=" + sailing +
+                ", small_blades=" + small_blades +
+                ", staff=" + staff +
+                ", swordsmanship=" + swordsmanship +
+                '}';
+    }
 }

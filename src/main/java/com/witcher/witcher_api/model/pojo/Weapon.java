@@ -8,8 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
+@DynamicUpdate
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -21,7 +23,7 @@ public class Weapon {
     @Id
     private Integer id;
 
-    @JsonIgnore
+    @Transient
     private int character_id;
 
     private String name;
@@ -38,4 +40,25 @@ public class Weapon {
     private Integer cost;
     private String category;
     private String effect;
+
+    @Override
+    public String toString() {
+        return "Weapon{" +
+                "name='" + name + '\'' +
+                ", type='" + type + '\'' +
+                ", weapon_accuracy=" + weapon_accuracy +
+                ", availability='" + availability + '\'' +
+                ", damage='" + damage + '\'' +
+                ", reliability=" + reliability +
+                ", hands_required=" + hands_required +
+                ", range='" + range + '\'' +
+                ", concealment='" + concealment + '\'' +
+                ", enhancements=" + enhancements +
+                ", weight=" + weight +
+                ", cost=" + cost +
+                ", category='" + category + '\'' +
+                ", effect='" + effect + '\'' +
+                ", id=" + id +
+                '}';
+    }
 }

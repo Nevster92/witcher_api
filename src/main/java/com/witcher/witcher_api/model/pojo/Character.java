@@ -8,8 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
+@DynamicUpdate
 @Getter
 @Setter
 @AllArgsConstructor
@@ -31,23 +33,23 @@ public class Character {
 
     private Integer age;
 
-    @NotBlank
+
     private Integer intelligence;
-    @NotBlank
+
     private Integer ref;
-    @NotBlank
+
     private Integer dex;
-    @NotBlank
+
     private Integer body;
-    @NotBlank
+
     private Integer spd;
-    @NotBlank
+
     private Integer emp;
-    @NotBlank
+
     private Integer cra;
-    @NotBlank
+
     private Integer will;
-    @NotBlank
+
     private Integer luck;
     @Transient
     private Integer stun;
@@ -55,6 +57,7 @@ public class Character {
     private Integer run;
     @Transient
     private Integer leap;
+
     private Integer hp;
     @Transient
     private Integer sta;
@@ -82,7 +85,7 @@ public class Character {
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
     private CraftSkill craftSkill;
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
-    private CraftSkill willSkill;
+    private WillSkill willSkill;
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL)
     private ReflexSkill reflexSkill;
 
@@ -231,6 +234,38 @@ public class Character {
 //    }
 
 
-
-
+    @Override
+    public String toString() {
+        return "Character{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", profession='" + profession + '\'' +
+                ", race='" + race + '\'' +
+                ", gender='" + gender + '\'' +
+                ", age=" + age +
+                ", intelligence=" + intelligence +
+                ", ref=" + ref +
+                ", dex=" + dex +
+                ", body=" + body +
+                ", spd=" + spd +
+                ", emp=" + emp +
+                ", cra=" + cra +
+                ", will=" + will +
+                ", luck=" + luck +
+                ", stun=" + stun +
+                ", run=" + run +
+                ", leap=" + leap +
+                ", hp=" + hp +
+                ", sta=" + sta +
+                ", enc=" + enc +
+                ", rec=" + rec +
+                ", max_hp=" + max_hp +
+                ", melee_bonus=" + melee_bonus +
+                ", punch=" + punch +
+                ", kick=" + kick +
+                ", bodySkill=" + bodySkill +
+                ", user=" + user +
+                ", reflexSkill=" + reflexSkill +
+                '}';
+    }
 }

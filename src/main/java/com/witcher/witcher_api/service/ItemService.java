@@ -41,11 +41,12 @@ public class ItemService {
         return itemRepository.createNewWeapon(weapon, characterId);
     }
 
+
     public void deleteWeapon(int weaponId) throws Exception {
         permissionService.weaponPermission(weaponId);
         int characterId = itemRepository.selectWeapon(weaponId).getCharacter_id();
         // delete all the Foregn Keys
-            characterRepository.setWeaponToNull(weaponId,characterId);
+        characterRepository.setWeaponToNull(weaponId,characterId);
         // delete weapon
             itemRepository.deleteWeapon(weaponId);
     }

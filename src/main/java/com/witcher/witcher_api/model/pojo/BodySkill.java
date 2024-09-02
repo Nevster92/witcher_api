@@ -25,6 +25,11 @@ public class BodySkill {
     private Integer physique;
     private Integer endurance;
 
-
-
+    @Override
+    public String toString() {
+        return "BodySkill{" +
+                "physique=" + physique +
+                ", endurance=" + endurance +
+                '}';
+    }
 }

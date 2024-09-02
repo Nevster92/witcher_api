@@ -3,7 +3,7 @@ import com.witcher.witcher_api.model.pojo.Character;
 
 import java.util.List;
 
-public interface CharacterRepository {
+public interface CharacterRepository  {
 
  Character findCharacterById(int id);
  List<Character> findAllCharacters( String userId);
@@ -18,11 +18,11 @@ public interface CharacterRepository {
 
  boolean hasAccessToCharacter(String userId, int characterId);
 
- public void setWeaponToNull(Integer weaponId, int characterId);
- public void setArmorToNull(Integer armorId, int characterId);
+  void setWeaponToNull(Integer weaponId, int characterId);
+  void setArmorToNull(Integer armorId, int characterId);
 
- public void updateRigthArm(int weaponId, int characterId);
- public void updateLeftArm(int weaponIdId, int characterId);
+  void updateRigthArm(int weaponId, int characterId);
+  void updateLeftArm(int weaponIdId, int characterId);
 
  String test();
 }
