@@ -3,7 +3,6 @@ package com.witcher.witcher_api.controller;
 
 import com.witcher.witcher_api.model.pojo.*;
 import com.witcher.witcher_api.model.pojo.Character;
-import com.witcher.witcher_api.model.request.CharacterRequest;
 import com.witcher.witcher_api.repository.CharacterRepo;
 import com.witcher.witcher_api.service.CharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +25,10 @@ public class CharacterController {
     CharacterService characterService;
 
     @CrossOrigin
-    @DeleteMapping("character/delete/{id}")
-    ResponseEntity<?> deleteCharacter( @PathVariable int id){
+    @DeleteMapping("character/delete/{characterId}")
+    ResponseEntity<?> deleteCharacter( @PathVariable Long characterId){
         try {
-            characterService.deleteCharacter(id);
+            characterService.deleteCharacter(characterId);
             return OK;
         }catch (Exception e){
             return ERROR;
@@ -38,26 +37,25 @@ public class CharacterController {
 
     @CrossOrigin
     @PutMapping("character/create")
-    ResponseEntity<?> createNewCharacter( @RequestBody String characterName){
+    ResponseEntity<?> createNewCharacter( @RequestBody Character newCharacter){
         try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.createNewCharacter(characterName));
+            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.createNewCharacter(newCharacter));
         }catch (Exception e){
             return ERROR;
         }
     }
 
     @CrossOrigin
-    @GetMapping("/character/{id}")
-    ResponseEntity<?> getCharacterById(@PathVariable int id){
+    @GetMapping("/character/{characterId}")
+    ResponseEntity<?> getCharacterById(@PathVariable Long characterId){
         try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body( characterService.getCharacterById(id));
+            return ResponseEntity.status(HttpStatus.OK.value()).body( characterService.getCharacterById(characterId));
         }catch (Exception e){
-
             return ERROR;
         }
     }
     @CrossOrigin
-    @GetMapping("characters")
+    @GetMapping("/characters")
     ResponseEntity<?> getCharacters(){
         try {
             return ResponseEntity.status(HttpStatus.OK.value()).body( characterService.getCharacters());
@@ -67,120 +65,30 @@ public class CharacterController {
     }
 
     @CrossOrigin
-    @PostMapping("character/{id}/bodySkills")
-    ResponseEntity<?> updateCharacterBodySkills(@PathVariable int id, @RequestBody BodySkill bodySkill){
+    @PostMapping("character/{characterId}")
+    ResponseEntity<?> updateCharacter(@PathVariable Long characterId, @RequestBody Character character){
         try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterBody(id, bodySkill));
-        }catch (Exception e){
-            return ERROR;
-        }
-    }
-
-    @CrossOrigin
-    @PostMapping("character/{id}/intelligenceSkills")
-    ResponseEntity<?> updateCharacterIntelligenceSkills(@PathVariable int id, @RequestBody IntelligenceSkill intelligenceSkill){
-        try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterIntelligence(id, intelligenceSkill));
-        }catch (Exception e){
-            return ERROR;
-        }
-    }
-
-    @CrossOrigin
-    @PostMapping("character/{id}/dexteritySkills")
-    ResponseEntity<?> updateCharacterDexteritySkills(@PathVariable int id, @RequestBody DexteritySkill dexteritySkill){
-        try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterDexterity(id, dexteritySkill));
-        }catch (Exception e){
-            return ERROR;
-        }
-    }
-
-    @CrossOrigin
-    @PostMapping("character/{id}/empathySkills")
-    ResponseEntity<?> updateCharacterEmpathySkills(@PathVariable int id, @RequestBody EmpathySkill empathySkill){
-        try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterEmpathy(id, empathySkill));
-        }catch (Exception e){
-            return ERROR;
-        }
-    }
-
-    @CrossOrigin
-    @PostMapping("character/{id}/willSkills")
-    ResponseEntity<?> updateCharacterWillSkills(@PathVariable int id, @RequestBody WillSkill willSkill){
-        try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterWill(id, willSkill));
-        }catch (Exception e){
-            return ERROR;
-        }
-    }
-    @CrossOrigin
-    @PostMapping("character/{id}/craftSkills")
-    ResponseEntity<?> updateCharacterCraftSkills(@PathVariable int id, @RequestBody CraftSkill craftSkill){
-        try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterCraft(id, craftSkill));
-        }catch (Exception e){
-            return ERROR;
-        }
-    }
-
-    @CrossOrigin
-    @PostMapping("character/{id}/reflexSkills")
-    ResponseEntity<?> updateCharacterReflexSkills(@PathVariable int id, @RequestBody ReflexSkill reflexSkill){
-        try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterReflex(id, reflexSkill));
-        }catch (Exception e){
-            return ERROR;
-        }
-    }
-
-    @CrossOrigin
-    @PostMapping("character/{id}")
-    ResponseEntity<?> updateCharacterCore(@PathVariable int id, @RequestBody Character character){
-        try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterCore(id, character));
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-            return ERROR;
-        }
-    }
-
-    @CrossOrigin
-    @PatchMapping("character/{characterId}/r_arm")
-    ResponseEntity<?> updateRightArm(@PathVariable int characterId, @RequestBody Map<String, Object> body){
-        int weaponId = (Integer) body.get("weapon_id");
-        try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setRigthArm(characterId, weaponId));
+            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacter(characterId, character));
         }catch (Exception e){
             return ERROR;
         }
     }
 
 
-
-    @Autowired
-    private CharacterRepo characterRepo;
+    // ###########################################################
+    //###################### TEST ################################
+    // ###########################################################
 
 
     @CrossOrigin
-    @GetMapping("testcharacter")
-    @Transactional
-    ResponseEntity<?> test(){
+    @GetMapping("/test/{characterId}")
+    ResponseEntity<?> testget(@PathVariable Long characterId){
+        try {
 
-        Character character = characterRepo.findByIdCustom(37L);
-        System.out.println("Mentés elött: " + character.getName());
-        System.out.println(character);
-
-        character.setName("MÁS NÉV");
-        System.out.println("Modosítás után: " + character.getName());
-
-        System.out.println(character);
-      //  characterRepo.save(character);
-
-        System.out.println("Mentés után: "+ characterRepo.findByIdCustom(37L).getName());
-            return OK;
-
+            return ResponseEntity.status(HttpStatus.OK.value()).body( characterService.getCharacterById(characterId));
+        }catch (Exception e){
+            return ERROR;
+        }
     }
 
 
