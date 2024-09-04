@@ -6,6 +6,7 @@ import com.witcher.witcher_api.model.pojo.User;
 import com.witcher.witcher_api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,24 +33,17 @@ public class UserController {
         }
     }
 
-    @PatchMapping("/username/{newUsername}")
-    ResponseEntity<?>  updateUserDetails(@PathVariable String newUsername){
-        try {
-            userService.setUsername(newUsername);
-            return OK;
-        }catch (Exception e){
-            return ERROR;
-        }
-    }
 
-    @PatchMapping("/email/{newEmail}")
-    ResponseEntity<?>  updateUserEmail(@PathVariable String newEmail){
+    @RequestMapping(value = "/",  method = RequestMethod.PATCH)
+    public ResponseEntity<?> partialUpdateGeneric(@RequestBody User updates ){
         try {
-            userService.setEmail(newEmail);
+            userService.updateUser(updates);
             return OK;
-        }catch (Exception e){
+        }
+        catch (Exception e){
             return ERROR;
         }
+
     }
 
 }

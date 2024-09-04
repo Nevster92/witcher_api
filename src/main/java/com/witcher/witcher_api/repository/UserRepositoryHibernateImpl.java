@@ -1,9 +1,10 @@
 package com.witcher.witcher_api.repository;
 
 import com.witcher.witcher_api.model.pojo.User;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
@@ -20,26 +21,35 @@ public class UserRepositoryHibernateImpl  implements UserRepository
         this.entityManager = emf.createEntityManager();
     }
 
+@Override
+    public void updateUser(String userId, User user) {
+        entityManager.getTransaction().begin();
+        entityManager.createQuery("update User SET username = CASE WHEN :username IS NOT NULL THEN :username ELSE username END, email = CASE WHEN :email IS NOT NULL THEN :email ELSE email END WHERE id = :id")
+                .setParameter("username", user.getUsername())
+                .setParameter("email", user.getEmail())
+                .setParameter("id", userId)
+                .executeUpdate();
+        entityManager.getTransaction().commit();
+
+
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        CriteriaUpdate<User> update = criteriaBuilder.createCriteriaUpdate(User.class);
+//        Root<User> root = update.from(User.class);
+//
+//        update.set(root.get("username"), user.getUsername());
+//        update.where(criteriaBuilder.equal(root.get("id"), userId));
+//
+//        EntityTransaction transaction = entityManager.getTransaction();
+//        transaction.begin();
+//        entityManager.createQuery(update).executeUpdate();
+//        transaction.commit();
+
+}
+
     @Override
     public User getUserById(String userId) {
         return entityManager.find(User.class,userId);
     }
 
-    @Override
-    public void setUsernameById(String userId, String userName) {
-        entityManager.getTransaction().begin();
-        User user = entityManager.find(User.class, userId);
-            user.setUsername(userName);
-            entityManager.merge(user);
-            entityManager.getTransaction().commit();
-    }
 
-    @Override
-    public void setEmailById(String userId, String email) {
-        entityManager.getTransaction().begin();
-        User user = entityManager.find(User.class, userId);
-        user.setEmail(email);
-        entityManager.merge(user);
-        entityManager.getTransaction().commit();
-    }
 }

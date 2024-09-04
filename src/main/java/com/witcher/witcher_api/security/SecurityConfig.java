@@ -10,12 +10,18 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
+    private final String[] WHITE_LIST = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/testcharacter"
+    };
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers( WHITE_LIST).permitAll()
                         .anyRequest().authenticated()
                 )	.oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(Customizer.withDefaults())
