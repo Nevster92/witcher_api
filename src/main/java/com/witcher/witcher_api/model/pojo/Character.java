@@ -239,6 +239,7 @@ public class Character {
         return "Character{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", user='" + user + '\'' +
                 ", profession='" + profession + '\'' +
                 ", race='" + race + '\'' +
                 ", gender='" + gender + '\'' +

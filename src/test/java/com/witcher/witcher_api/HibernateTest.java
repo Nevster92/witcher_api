@@ -1,7 +1,9 @@
 package com.witcher.witcher_api;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.witcher.witcher_api.controller.CharacterController;
+import com.witcher.witcher_api.model.pojo.BodySkill;
 import com.witcher.witcher_api.model.pojo.Character;
 import com.witcher.witcher_api.repository.CharacterRepo;
 import com.witcher.witcher_api.service.CharacterService;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest
@@ -46,45 +49,39 @@ public class HibernateTest {
 
 
 
-
     @Test
-    @Transactional
-    public void test() throws Exception {
-
+    public void updateCharacterAttribute() throws Exception {
         Mockito.doNothing().when(permissionService).characterPermission(155L);
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        String URI = "/test/{characterId}";
-        String body = """
-                {
-                    "name": "Módosított",
-                    "user": {
-                        "username": "ModosítottUsername"
-                    },
-                    "bodyskill": {
-                        "physique": 99
-                    }
-                }
-                """;
+        String URI = "/character/{characterId}";
         Long characterId = 155L;
 
-        MvcResult result = mockMvc.perform(get("/test/{characterId}", characterId)
-                        .contentType(MediaType.APPLICATION_JSON)).andReturn();
+        Character parameterCharacter = new Character();
+        parameterCharacter.setName("ModifiedName");
+        parameterCharacter.setAge(99);
+        parameterCharacter.setBodySkill(new BodySkill());
+        parameterCharacter.getBodySkill().setPhysique(111);
 
-        System.out.println("NA EZ JÖN VISTZA:");
-        System.out.println(result.getResponse().getStatus());
-        System.out.println(result.getResponse().getContentAsString());
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put(URI, characterId)
+                        .content(objectMapper.writeValueAsString(parameterCharacter))  // Set the body here
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        Character returnedCharacter = objectMapper.readValue(jsonResponse, Character.class);
+
+        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK");
+        assertEquals( "ModifiedName",returnedCharacter.getName(),"The name attribute is not saved");
+        assertEquals( 111,returnedCharacter.getBodySkill().getPhysique(),"The (complex) bodySkill.physique attribute is not saved!");
+
+//
+//        MvcResult result = mockMvc.perform(get("/test/{characterId}", characterId)
+//                        .contentType(MediaType.APPLICATION_JSON)).andReturn();
 
 
     }
 
-    @Test
-    @Transactional
-    public void test2() throws Exception {
-
-        Character character = characterRepo.findById(155L).get();
-        System.out.println(character.getName());
-
-    }
 
 
 

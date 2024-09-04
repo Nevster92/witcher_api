@@ -65,31 +65,15 @@ public class CharacterController {
     }
 
     @CrossOrigin
-    @PostMapping("character/{characterId}")
+    @PutMapping("/character/{characterId}")
     ResponseEntity<?> updateCharacter(@PathVariable Long characterId, @RequestBody Character character){
         try {
-            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacter(characterId, character));
+            return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.setCharacterAttribute(characterId, character));
         }catch (Exception e){
             return ERROR;
         }
     }
 
-
-    // ###########################################################
-    //###################### TEST ################################
-    // ###########################################################
-
-
-    @CrossOrigin
-    @GetMapping("/test/{characterId}")
-    ResponseEntity<?> testget(@PathVariable Long characterId){
-        try {
-
-            return ResponseEntity.status(HttpStatus.OK.value()).body( characterService.getCharacterById(characterId));
-        }catch (Exception e){
-            return ERROR;
-        }
-    }
 
 
 }

@@ -2,6 +2,7 @@ package com.witcher.witcher_api.service;
 
 import com.witcher.witcher_api.model.pojo.Character;
 import com.witcher.witcher_api.repository.CharacterRepo;
+import com.witcher.witcher_api.utils.CharacterMapper;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class CharacterService {
 
     @Autowired
     PermissionService permissionService;
+
+    @Autowired
+    private CharacterMapper characterMapper;
 
     private String getUserId()  {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -62,18 +66,12 @@ public class CharacterService {
 
 
     @Transactional
-    public Character setCharacter(Long characterId, Character newCharacter) {
+    public Character setCharacterAttribute(Long characterId, Character newCharacter) {
         Character character = characterRepo.findById(characterId).get();
-        String[] ignoredFields = {"User"};
-        //TODO össze kell fésülni... a newCharacter-el. Keresni rá valami lib-et.
-        BeanUtils.copyProperties(newCharacter, character, ignoredFields);
+        characterMapper.updateCharacterFromDto(newCharacter, character);
         characterRepo.save(character);
         return character;
     }
 
-    public Character testService(Long characterId) throws Exception {
-
-        return characterRepo.findById(characterId).get();
-    }
 
 }
