@@ -96,8 +96,12 @@ public class HibernateTest {
 
         Character returnedCharacter = objectMapper.readValue(jsonResponse, Character.class);
 
-        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK");
-        assertEquals( "ModifiedName",returnedCharacter.getName(),"The name attribute is not saved");
+        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK!");
+        assertEquals( "Elso Test Karakter",returnedCharacter.getName(),"The name attribute is not matched!");
+        assertEquals( "Armored Hood",returnedCharacter.getHead().getName(),"The head armor is not matched!");
+        assertEquals( "Arming Sword",returnedCharacter.getL_arm().getName(),"The l_arm weapon is not matched!");
+
+
 
     }
 
