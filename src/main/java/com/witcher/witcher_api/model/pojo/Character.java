@@ -239,7 +239,6 @@ public class Character {
         return "Character{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", user='" + user + '\'' +
                 ", profession='" + profession + '\'' +
                 ", race='" + race + '\'' +
                 ", gender='" + gender + '\'' +
@@ -264,9 +263,19 @@ public class Character {
                 ", melee_bonus=" + melee_bonus +
                 ", punch=" + punch +
                 ", kick=" + kick +
+                ", intelligenceSkill=" + intelligenceSkill +
                 ", bodySkill=" + bodySkill +
-                ", user=" + user +
+                ", dexteritySkill=" + dexteritySkill +
+                ", empathySkill=" + empathySkill +
+                ", craftSkill=" + craftSkill +
+                ", willSkill=" + willSkill +
                 ", reflexSkill=" + reflexSkill +
+                ", user=" + user +
+                ", l_arm=" + l_arm +
+                ", r_arm=" + r_arm +
+                ", head=" + head +
+                ", torso=" + torso +
+                ", leg=" + leg +
                 '}';
     }
 }

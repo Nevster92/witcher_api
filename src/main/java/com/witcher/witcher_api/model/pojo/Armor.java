@@ -23,8 +23,6 @@ public class Armor {
     @Id
     private Integer id;
 
-    @JsonIgnore
-    private int character_id;
 
     private String name;
     private String category;

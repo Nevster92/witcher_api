@@ -33,8 +33,16 @@ public class CharacterService {
             return  token.getClaims().get("sub").toString();
     }
 
+    @Transactional
     public Character getCharacterById(Long characterId) throws Exception {
         permissionService.characterPermission(characterId);
+        try {
+        Character character = characterRepo.findById(characterId).get();
+        }catch (Exception e){
+            System.out.println("EXEP");
+            System.out.println(e.getMessage());
+        }
+
             return characterRepo.findById(characterId).get();
     }
 

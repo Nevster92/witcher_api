@@ -78,9 +78,29 @@ public class HibernateTest {
 //
 //        MvcResult result = mockMvc.perform(get("/test/{characterId}", characterId)
 //                        .contentType(MediaType.APPLICATION_JSON)).andReturn();
+    }
 
+
+    @Test
+    public void getCharacter() throws Exception {
+        Mockito.doNothing().when(permissionService).characterPermission(155L);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String URI = "/character/{characterId}";
+        Long characterId = 155L;
+
+        MvcResult result = mockMvc.perform(get(URI, characterId)
+                        .contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+
+        Character returnedCharacter = objectMapper.readValue(jsonResponse, Character.class);
+
+        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK");
+        assertEquals( "ModifiedName",returnedCharacter.getName(),"The name attribute is not saved");
 
     }
+
 
 
 

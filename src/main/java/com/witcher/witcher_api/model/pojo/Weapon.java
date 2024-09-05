@@ -23,9 +23,6 @@ public class Weapon {
     @Id
     private Integer id;
 
-    @Transient
-    private int character_id;
-
     private String name;
     private String type;
     private Integer weapon_accuracy;
