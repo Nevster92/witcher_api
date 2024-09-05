@@ -1,6 +1,8 @@
 package com.witcher.witcher_api;
 
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.witcher.witcher_api.controller.CharacterController;
 import com.witcher.witcher_api.model.pojo.BodySkill;
@@ -24,6 +26,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -67,11 +72,11 @@ public class HibernateTest {
                         .content(objectMapper.writeValueAsString(parameterCharacter))  // Set the body here
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
+        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK");
 
         String jsonResponse = result.getResponse().getContentAsString();
         Character returnedCharacter = objectMapper.readValue(jsonResponse, Character.class);
 
-        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK");
         assertEquals( "ModifiedName",returnedCharacter.getName(),"The name attribute is not saved");
         assertEquals( 111,returnedCharacter.getBodySkill().getPhysique(),"The (complex) bodySkill.physique attribute is not saved!");
 
@@ -91,19 +96,40 @@ public class HibernateTest {
 
         MvcResult result = mockMvc.perform(get(URI, characterId)
                         .contentType(MediaType.APPLICATION_JSON)).andReturn();
+        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK!");
 
         String jsonResponse = result.getResponse().getContentAsString();
 
         Character returnedCharacter = objectMapper.readValue(jsonResponse, Character.class);
 
-        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK!");
         assertEquals( "Elso Test Karakter",returnedCharacter.getName(),"The name attribute is not matched!");
         assertEquals( "Armored Hood",returnedCharacter.getHead().getName(),"The head armor is not matched!");
         assertEquals( "Arming Sword",returnedCharacter.getL_arm().getName(),"The l_arm weapon is not matched!");
+    }
 
+    @Test
+    public void getCharacters() throws Exception {
+        Mockito.when(permissionService.getUserId()).thenReturn("10");
 
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        String URI = "/characters";
+        MvcResult result = mockMvc.perform(get(URI)
+                .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andReturn();
+        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK!");
+
+        // Necessary because of the UTF-8 encoding
+        String jsonResponse = new String(result.getResponse().getContentAsByteArray(), StandardCharsets.UTF_8);
+        List<Character> returnedCharacters = objectMapper.readValue(jsonResponse, new TypeReference<List<Character>>() {});
+
+        assertEquals( 2, returnedCharacters.size(),"The list size is not correct!");
+        assertEquals( "Elso Test Karakter", returnedCharacters.getFirst().getName(),"The first element of the list is not correct!");
+        assertEquals( "Második Test Karakter", returnedCharacters.get(1).getName(),"The second element of the list is not correct!");
 
     }
+
 
 
 

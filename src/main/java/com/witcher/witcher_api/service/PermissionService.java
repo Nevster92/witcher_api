@@ -18,7 +18,7 @@ public class PermissionService {
     @Autowired
     CharacterRepo characterRepo;
 
-    private String getUserId() {
+    public String getUserId() {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Jwt token = (Jwt) authentication.getPrincipal();
             return  token.getClaims().get("sub").toString();

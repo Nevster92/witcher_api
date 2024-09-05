@@ -47,7 +47,8 @@ public class CharacterService {
     }
 
     public List<Character> getCharacters()  {
-        return characterRepo.findByUserId(getUserId());
+        String userId = permissionService.getUserId();
+        return characterRepo.findByUserId(userId);
     }
 
 
