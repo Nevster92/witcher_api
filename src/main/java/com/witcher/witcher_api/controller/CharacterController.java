@@ -25,7 +25,7 @@ public class CharacterController {
     CharacterService characterService;
 
     @CrossOrigin
-    @DeleteMapping("character/delete/{characterId}")
+    @DeleteMapping("/character/delete/{characterId}")
     ResponseEntity<?> deleteCharacter( @PathVariable Long characterId){
         try {
             characterService.deleteCharacter(characterId);

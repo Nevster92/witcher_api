@@ -62,7 +62,7 @@ public class CharacterService {
 
     @Transactional
     public void deleteCharacter(Long characterId) throws Exception {
-        permissionService.characterPermission(characterId);
+        userService.characterPermission(characterId);
         try {
            characterRepo.deleteById(characterId);
         }catch (Exception e ){

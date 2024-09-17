@@ -30,10 +30,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.NoSuchElementException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -45,8 +45,6 @@ public class HibernateTest {
     @Autowired
     private CharacterRepo characterRepo;
 
-    @Autowired
-    private CharacterService characterService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -157,10 +155,9 @@ public class HibernateTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8"))
                 .andReturn();
+        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK!");
 
         String jsonResponse = result.getResponse().getContentAsString();
-
-        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK!");
         Character returnedCharacter = objectMapper.readValue(jsonResponse, Character.class);
 
         assertEquals("New Test Character", characterRepo.findById(returnedCharacter.getId()).get().getName(), "Cant find the new character");
@@ -168,7 +165,21 @@ public class HibernateTest {
     }
 
 
+    @Test
+    public void deleteCharacter() throws Exception {
+        Mockito.when(userService.getUserId()).thenReturn("10");
+        String URI = "/character/delete/{characterId}";
+        Long characterId = 155L;
 
+        MvcResult result = mockMvc.perform(delete(URI, characterId)
+                .contentType(MediaType.APPLICATION_JSON)).andReturn();
+
+        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK!");
+
+        assertThrows(NoSuchElementException.class, ()->{
+            characterRepo.findById(155L).get();
+        }, "The character is still in the database!");
+    }
 
 
 

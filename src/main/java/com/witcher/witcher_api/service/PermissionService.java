@@ -26,7 +26,6 @@ public class PermissionService {
 
     public void characterPermission(Long characterId) throws Exception {
         Optional<Character> character = characterRepo.findById(characterId);
-
         if(!character.get().getUser().getId().equals(getUserId())){
             throw new Exception("No Permission!");
         }
