@@ -18,7 +18,7 @@ public class UserService {
     @Autowired
     UserRepository userRepositoryHibernateImpl;
 
-    private String getUserId() {
+    public String getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Jwt token = (Jwt) authentication.getPrincipal();
         return  token.getClaims().get("sub").toString();

@@ -10,6 +10,7 @@ import com.witcher.witcher_api.model.pojo.Character;
 import com.witcher.witcher_api.repository.CharacterRepo;
 import com.witcher.witcher_api.service.CharacterService;
 import com.witcher.witcher_api.service.PermissionService;
+import com.witcher.witcher_api.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -32,6 +33,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -52,6 +54,8 @@ public class HibernateTest {
     @MockBean
     private PermissionService permissionService;
 
+    @MockBean
+    private UserService userService;
 
 
     @Test
@@ -68,7 +72,7 @@ public class HibernateTest {
         parameterCharacter.setBodySkill(new BodySkill());
         parameterCharacter.getBodySkill().setPhysique(111);
 
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.put(URI, characterId)
+        MvcResult result = mockMvc.perform(put(URI, characterId)
                         .content(objectMapper.writeValueAsString(parameterCharacter))  // Set the body here
                         .contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
@@ -108,7 +112,7 @@ public class HibernateTest {
     }
 
     @Test
-    public void getCharacters() throws Exception {
+    public void getCharacterList() throws Exception {
         Mockito.when(permissionService.getUserId()).thenReturn("10");
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -128,6 +132,39 @@ public class HibernateTest {
         assertEquals( "Elso Test Karakter", returnedCharacters.getFirst().getName(),"The first element of the list is not correct!");
         assertEquals( "Második Test Karakter", returnedCharacters.get(1).getName(),"The second element of the list is not correct!");
 
+    }
+
+    @Test
+    public void createNewCharacter() throws Exception {
+        Mockito.when(permissionService.getUserId()).thenReturn("10");
+        Mockito.when(userService.getUserId()).thenReturn("10");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        Character parameterCharacter = new Character();
+        parameterCharacter.setName("New Test Character");
+        parameterCharacter.setAge(99);
+        parameterCharacter.setProfession("Mage");
+        parameterCharacter.setGender("male");
+        parameterCharacter.setRace("dwarf");
+        parameterCharacter.setBodySkill(new BodySkill());
+        parameterCharacter.getBodySkill().setPhysique(111);
+
+
+        String URI = "/character/create";
+        MvcResult result = mockMvc.perform(put(URI)
+                        .content(objectMapper.writeValueAsString(parameterCharacter))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8"))
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+
+        assertEquals(200, result.getResponse().getStatus(), "HTTP Code is not OK!");
+        Character returnedCharacter = objectMapper.readValue(jsonResponse, Character.class);
+
+        assertEquals("New Test Character", characterRepo.findById(returnedCharacter.getId()).get().getName(), "Cant find the new character");
+        assertEquals("New Test Character", returnedCharacter.getName(), "The character name is not correct!");
     }
 
 

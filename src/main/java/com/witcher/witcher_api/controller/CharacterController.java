@@ -36,7 +36,7 @@ public class CharacterController {
     }
 
     @CrossOrigin
-    @PutMapping("character/create")
+    @PutMapping("/character/create")
     ResponseEntity<?> createNewCharacter( @RequestBody Character newCharacter){
         try {
             return ResponseEntity.status(HttpStatus.OK.value()).body(characterService.createNewCharacter(newCharacter));

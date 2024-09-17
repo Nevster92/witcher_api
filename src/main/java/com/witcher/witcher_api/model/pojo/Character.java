@@ -20,6 +20,7 @@ import org.hibernate.annotations.DynamicUpdate;
 public class Character {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank

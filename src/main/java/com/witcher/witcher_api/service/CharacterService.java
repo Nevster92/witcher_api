@@ -1,6 +1,7 @@
 package com.witcher.witcher_api.service;
 
 import com.witcher.witcher_api.model.pojo.Character;
+import com.witcher.witcher_api.model.pojo.User;
 import com.witcher.witcher_api.repository.CharacterRepo;
 import com.witcher.witcher_api.utils.CharacterMapper;
 import lombok.NoArgsConstructor;
@@ -25,13 +26,11 @@ public class CharacterService {
     PermissionService permissionService;
 
     @Autowired
+    UserService userService;
+
+    @Autowired
     private CharacterMapper characterMapper;
 
-    private String getUserId()  {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Jwt token = (Jwt) authentication.getPrincipal();
-            return  token.getClaims().get("sub").toString();
-    }
 
     @Transactional
     public Character getCharacterById(Long characterId) throws Exception {
@@ -51,11 +50,10 @@ public class CharacterService {
         return characterRepo.findByUserId(userId);
     }
 
-
-
-
     public Character createNewCharacter(Character newCharacter){
         try {
+            String userId = userService.getUserId();
+            newCharacter.setUser(new User(userId));
             return characterRepo.save(newCharacter);
         }catch (Exception e ){
             throw e;
